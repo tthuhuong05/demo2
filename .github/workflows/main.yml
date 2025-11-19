@@ -26,24 +26,24 @@ jobs:
       # 3. Setup SSH key
       - name: Setup SSH key
         run: |
-          echo "${{ secrets.SSH_KEY }}" > hehe.pem
-          chmod 600 hehe.pem  # Đảm bảo quyền file key
+          echo "${{ secrets.SSH_KEY }}" > final.pem
+          chmod 600 fianl.pem  # Đảm bảo quyền file key
 
       # 4. Pre-flight check: SSH vào EC2 để kiểm tra kết nối
       - name: Pre-flight SSH check
         run: |
-          ssh -o StrictHostKeyChecking=no -i hehe.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "echo 'SSH OK'; mkdir -p /var/www/html"
+          ssh -o StrictHostKeyChecking=no -i final.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "echo 'SSH OK'; mkdir -p /var/www/html"
 
       # 5. Rsync code lên EC2, exclude thư mục .git và .github
       - name: Rsync to EC2 (exclude git & secrets)
         run: |
-          rsync -avz -e "ssh -o StrictHostKeyChecking=no -i hehe.pem" --delete \
-            --exclude ".git/" --exclude ".github/" --exclude "hehe.pem" \
+          rsync -avz -e "ssh -o StrictHostKeyChecking=no -i final.pem" --delete \
+            --exclude ".git/" --exclude ".github/" --exclude "final.pem" \
             ./ ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/var/www/html/
 
       # 6. Restart Apache trên EC2
       - name: Restart Apache
         run: |
-          ssh -o StrictHostKeyChecking=no -i hehe.pem \
+          ssh -o StrictHostKeyChecking=no -i final.pem \
             ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} \
             "sudo systemctl restart httpd || sudo systemctl restart apache2"
