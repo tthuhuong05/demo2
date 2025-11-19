@@ -27,7 +27,7 @@ jobs:
       - name: Setup SSH key
         run: |
           echo "${{ secrets.SSH_KEY }}" > final.pem
-          chmod 600 fianl.pem  # Đảm bảo quyền file key
+          chmod 600 final.pem  # Đảm bảo quyền file key
 
       # 4. Pre-flight check: SSH vào EC2 để kiểm tra kết nối
       - name: Pre-flight SSH check
